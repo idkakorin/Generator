@@ -12,5 +12,6 @@
 #pragma link C++ class genie::QELKinematicsGenerator;
 #pragma link C++ class genie::QELEventGenerator;
 #pragma link C++ class genie::QELEventGeneratorSM;
+#pragma link C++ class genie::QELEventGeneratorSuSAMstar;
 
 #endif

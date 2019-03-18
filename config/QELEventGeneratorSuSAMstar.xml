@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+Configuration for the QELEventGeneratorSuSAMstar EventRecordVisitorI
+
+Configurable Parameters:
+.............................................................................................................
+Name                      Type    Optional   Comment                                                    Default
+.............................................................................................................
+MaxXSec-SafetyFactor      double   Yes       Safety factor for the maximum                              1.2
+                                             differential cross section
+MaxXSec-DiffTolerance     double   Yes       Max allowed 200*(xsec-xsecmax)/(xsec+xsecmax)              999999.0
+                                             if xsec>xsecmax
+UniformOverPhaseSpace     bool     Yes       Kinematics uniformly over allowed phase space              false
+                                             wgt = (phase_space_volume)*(diff_xsec)/(xsec)
+Cache-MinEnergy           double   Yes       min E for which maxxsec is cached -                        1.00
+                                             forcing explicit calc
+NumOfKnots_x              int     Yes        Number of x-knots to search maximum on the grid            20
+NumOfKnots_y              int     Yes        Number of y-knots to search maximum on the grid            20
+-->
+
+
+<alg_conf>
+
+  <param_set name="Default"> 
+
+  </param_set>
+  
+
+</alg_conf>
+

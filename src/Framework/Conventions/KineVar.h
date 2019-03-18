@@ -10,7 +10,7 @@
 
 \created  May 06, 2004
 
-\cpright  Copyright (c) 2003-2018, The GENIE Collaboration
+\cpright  Copyright (c) 2003-2019, The GENIE Collaboration
           For the full text of the license visit http://copyright.genie-mc.org
           or see $GENIE/LICENSE
 */
@@ -52,7 +52,6 @@ typedef enum EKineVar {
   kKVSelRad,
   kKVPn,
   kKVv,
-  kKVSelPn,
   kKVSelv,
   // put all new enum names right before this line
   // do not change any previous ordering (neither insert nor delete)
@@ -92,9 +91,8 @@ public:
       case(kKVSelRad)  : return "*Selected* Struck particle position";   break;
       case(kKVPn)      : return " *Running* Hit nucleon momentum";       break;
       case(kKVv)       : return " *Running* Energy transfer";            break;
-      case(kKVSelPn)   : return "*Selected* Hit nucleon momentum";       break;
       case(kKVSelv)    : return "*Selected* Energy transfer";            break;
- 
+
       default          : return "** Unknown kinematic variable **";      break;
     }
     return "** Unknown kinematic variable **";

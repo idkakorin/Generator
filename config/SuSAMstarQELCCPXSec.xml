@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<alg_conf>
+
+<!--
+Configuration for the SuSAM* QEL CCP xsec algorithm.
+
+Configurable Parameters:
+.....................................................................................................................
+Name                                  Type     Optional   Comment                                    Default
+......................................................................................................................
+FormFactorsAlg                        alg      No         QEL form factors algorithm
+XSec-Integrator                       alg      No
+CKM-Vud                               double   No         Vud element of CKM-matrix                  CommonParam[CKM]
+QEL-CC-XSecScale                      double   Yes        Scaling factor                             GPL value
+SuSAM-a1                              double   No         parameters of the first gaussian f1
+SuSAM-a2                              double   No         for SuSAM* scaling function f=f1+f2
+SuSAM-a3                              double   No         f1=a3*exp[-(psi*-a1)^2/(2*a2^2)]
+SuSAM-b1                              double   No         parameters of the second gaussian f2
+SuSAM-b2                              double   No         for SuSAM* scaling function f=f1+f2
+SuSAM-b3                              double   No         f2=b3*exp[-(psi*-b1)^2/(2*b2^2)]
+
+-->
+
+  <param_set name="Default">
+
+    <param type="string"  name="CommonParam"> CKM                                    </param>
+
+    <param type="double" name="QEL-CC-XSecScale">     1.000                          </param>
+
+    <param type="alg"  name="XSec-Integrator"> genie::SuSAMstarQELCCXSec/Miser     </param>
+    
+    <!-- central value of band  -->
+    <param type="double" name="SuSAM-a1">      -0.0465038                            </param>
+    <param type="double" name="SuSAM-a2">       0.468619                             </param>
+    <param type="double" name="SuSAM-a3">       0.632935                             </param>
+    <param type="double" name="SuSAM-b1">       0.706697                             </param>
+    <param type="double" name="SuSAM-b2">       1.07336                              </param>
+    <param type="double" name="SuSAM-b3">       0.202383                             </param>
+    
+    <!--  lower value of band  
+    <param type="double" name="SuSAM-a1">       0.96702                              </param>
+    <param type="double" name="SuSAM-a2">       0.704612                             </param>
+    <param type="double" name="SuSAM-a3">       0.149049                             </param>
+    <param type="double" name="SuSAM-b1">       -0.0269651                           </param>
+    <param type="double" name="SuSAM-b2">       0.442309                             </param>
+    <param type="double" name="SuSAM-b3">       0.598216                             </param>
+    -->
+    
+    <!--  upper value of band  
+    <param type="double" name="SuSAM-a1">       -0.0779039                           </param>
+    <param type="double" name="SuSAM-a2">        0.560528                            </param>
+    <param type="double" name="SuSAM-a3">        0.7601                              </param>
+    <param type="double" name="SuSAM-b1">        0.965166                            </param>
+    <param type="double" name="SuSAM-b2">        1.2798                              </param>
+    <param type="double" name="SuSAM-b3">        0.199749                            </param>
+    -->
+  
+  </param_set>
+
+
+  <param_set name="Dipole"> 
+     <param type="alg"  name="FormFactorsAlg">  genie::LwlynSmithFFCC/Dipole  </param>
+ 
+   </param_set>
+
+  <param_set name="ZExp"> 
+     <param type="alg"  name="FormFactorsAlg">  genie::LwlynSmithFFCC/ZExp    </param>
+ 
+  </param_set>
+
+  <param_set name="RunningMA"> 
+     <param type="alg"  name="FormFactorsAlg">  genie::LwlynSmithFFCC/RunningMA </param>
+
+  </param_set>
+
+</alg_conf>

@@ -12,6 +12,7 @@
 #pragma link C++ class genie::BBA03ELFormFactorsModel;
 #pragma link C++ class genie::BBA05ELFormFactorsModel;
 #pragma link C++ class genie::BBA07ELFormFactorsModel;
+#pragma link C++ class genie::GalsterELFormFactorsModel;
 #pragma link C++ class genie::DipoleELFormFactorsModel;
 #pragma link C++ class genie::TransverseEnhancementFFModel;
 
@@ -32,12 +33,14 @@
 #pragma link C++ class genie::SmithMonizQELCCPXSec;
 #pragma link C++ class genie::SmithMonizQELCCXSec;
 #pragma link C++ class genie::SmithMonizUtils;
+#pragma link C++ class genie::SuSAMstarQELCCPXSec;
+#pragma link C++ class genie::SuSAMstarQELCCXSec;
+#pragma link C++ class genie::SuSAMstarUtils;
 
 #pragma link C++ class genie::QELFormFactors;
 #pragma link C++ class genie::QELFormFactorsModelI;
 
 #pragma link C++ class genie::QELXSec;
-
-
+#pragma link C++ class genie::NewQELXSec;
 
 #endif
