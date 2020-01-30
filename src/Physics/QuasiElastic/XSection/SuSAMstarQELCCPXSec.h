@@ -12,7 +12,7 @@
 
 \author   I. Kakorin <kakorin@jinr.ru>,                Joint Institute for Nuclear Research \n
           V. Naumov  <vnaumov@theor.jinr.ru>,          Joint Institute for Nuclear Research \n
-          adapted from  fortran code provided by  \n
+          adapted from fortran code provided by  \n
           I. Ruiz Simo <ruizsig@ugr.es>,               University of Granada \n
           V.L. Martinez-Consentino <victormc@ugr.es>,  University of Granada \n
           J.E. Amaro <amaro@ugr.es>,                   University of Granada \n

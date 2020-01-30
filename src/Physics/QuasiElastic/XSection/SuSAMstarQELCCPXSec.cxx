@@ -116,13 +116,13 @@ double SuSAMstarQELCCPXSec::d2sQES_dEldCosThetal(const Interaction * interaction
   // cosine of angle of outgoing charged lepton
   double cost = leptonMom.CosTheta();
   // magnitude of the 3-momentum transfer
-  double q2 = enu*enu + xkmu*xkmu - 2.0*enu*xkmu*cost;
+  double q2 = enu*enu + xkmu*xkmu - 2.*enu*xkmu*cost;
   double q = TMath::Sqrt(q2);
   // magnitude of the 4-momentum transfer
   double fourq2  = omega*omega - q2;
   
   if (fourq2 >= 0)
-    return 0.0;
+    return 0.;
   
   kinematics->Setq2(fourq2);
   
@@ -139,27 +139,27 @@ double SuSAMstarQELCCPXSec::d2sQES_dEldCosThetal(const Interaction * interaction
   double tant2   = -fourq2/v0;
   
   // the v-coefficients to which response functions are multiplied
-  double vcc = 1.0 - tant2*delta2;                                              // Eq. (3)
-  double vcl = xnu + tant2*delta2/rhop;                                         // Eq. (4)
-  double vll = xnu*xnu + tant2*(1.0 + 2.0*xnu/rhop + rho*delta2)*delta2;        // Eq. (5)
-  double vt  = rho/2.0 + tant2 - tant2*(xnu + rho*rhop*delta2/2.0)*delta2/rhop; // Eq. (6)
-  double vtp = tant2*(1.0 - xnu*rhop*delta2)/rhop;                              // Eq. (7)
+  double vcc = 1. - tant2*delta2;                                              // Eq. (3)
+  double vcl = xnu + tant2*delta2/rhop;                                        // Eq. (4)
+  double vll = xnu*xnu + tant2*(1. + 2.*xnu/rhop + rho*delta2)*delta2;         // Eq. (5)
+  double vt  = rho/2. + tant2 - tant2*(xnu + rho*rhop*delta2/2.)*delta2/rhop;  // Eq. (6)
+  double vtp = tant2*(1. - xnu*rhop*delta2)/rhop;                              // Eq. (7)
   
   // bellow all calculated values correspond to star values in the paper
   double am = mN*sm_utils->GetEffectiveMassRatio(); 
 
   // adimensional variables
-  double xkappa  = q/2.0/am;
-  double xlambda = omega/2.0/am;
+  double xkappa  = q/2./am;
+  double xlambda = omega/2./am;
   double xkappa2 = xkappa*xkappa;
   double tau     = xkappa2 - xlambda*xlambda;
-  double tau1    = tau + 1.0;
+  double tau1    = tau + 1.;
   double xk2tau  = xkappa2/tau;
   double sqttau1 = TMath::Sqrt(tau*tau1); // tau*tau1 is always greater than 0 if Q2>0
   
   double fm      = sm_utils->GetFermiMomentum();
-  double fmp     = fm*TMath::Power(2.*Z/A, 1.0/3);
-  double fmn     = fm*TMath::Power(2.*N/A, 1.0/3);
+  double fmp     = fm*TMath::Power(2.*Z/A, 1./3);
+  double fmn     = fm*TMath::Power(2.*N/A, 1./3);
   
   double etafini   = fmp/am;   // antineutrino case
   double etaffin   = fmn/am;   // antineutrino case
@@ -169,14 +169,14 @@ double SuSAMstarQELCCPXSec::d2sQES_dEldCosThetal(const Interaction * interaction
       etaffin   = fmp/am;      // neutrino case
   }
   
-  double epsiffin  = TMath::Sqrt(1.0 + etaffin*etaffin); // 1.0 + etaffin*etaffin is always greater than 0
-  double epsifini  = TMath::Sqrt(1.0 + etafini*etafini); // 1.0 + etafini*etafini is always greater than 0
-  double sqt1t   = TMath::Sqrt(tau1/tau);                // tau1/tau is always greater than 0 if Q2>0
-  double e1      = xkappa*sqt1t - xlambda;
-  double e2      = epsiffin - 2.0*xlambda;
-  double e0      = TMath::Max(e1, e2);
-  double xif    = epsifini - 1.0;
-  double xi0     = e0 - 1.0;
+  double epsiffin  = TMath::Sqrt(1. + etaffin*etaffin);                 // 1. + etaffin*etaffin is always greater than 0
+  double epsifini  = TMath::Sqrt(1. + etafini*etafini);                 // 1. + etafini*etafini is always greater than 0
+  double sqt1t     = TMath::Sqrt(tau1/tau);                             // tau1/tau is always greater than 0 if Q2>0
+  double e1        = xkappa*sqt1t - xlambda;                            
+  double e2        = epsiffin - 2.*xlambda;                             
+  double e0        = TMath::Max(e1, e2);                                // for non-Pauli blocking e0 = e1
+  double xif       = epsifini - 1.;
+  double xi0       = e0 - 1.;
   
 
   // scaling variable psi^2
@@ -186,48 +186,48 @@ double SuSAMstarQELCCPXSec::d2sQES_dEldCosThetal(const Interaction * interaction
   // scaling functions
   /*
   // well-known function of Fermi gas
-  double scalfun = 0.0;    // Eq. (18)
-  if(psi2 <= 1.0)
-    scalfun = 3.0/4.0*(1.0 - psi2);
+  double scalfun = 0.;    // Eq. (18)
+  if(psi2 <= 1.)
+    scalfun = 3./4.*(1. - psi2);
   */ 
   
   // Phenomenological scaling function  central
   // calculation of scaling function by Eq. (37)
-  if (psi2 < 0.)  psi2 = 0.0;
+  if (psi2 < 0.)  psi2 = 0.;
   double psi = TMath::Sqrt(psi2);   // there is strong evidence that psi2>=0
   if(xlambda <= tau) 
      psi = -psi;
   double x = psi;
-  if ( TMath::Abs((x - fa1)/fa2) > 5.0 && TMath::Abs((x - fb1)/fb2) > 5.0 ) return 0.0;
-  double f1 = fa3*TMath::Exp(-(x - fa1)*(x - fa1)/(2.0*fa2*fa2));
-  double f2 = fb3*TMath::Exp(-(x - fb1)*(x - fb1)/(2.0*fb2*fb2));
+  if ( TMath::Abs((x - fa1)/fa2) > 5. && TMath::Abs((x - fb1)/fb2) > 5. ) return 0.;
+  double f1 = fa3*TMath::Exp(-(x - fa1)*(x - fa1)/(2.*fa2*fa2));
+  double f2 = fb3*TMath::Exp(-(x - fb1)*(x - fb1)/(2.*fb2*fb2));
   double scalfun = f1 + f2; 
   
   // Linhard function
-  double r0 = XN*xif/(am*TMath::Power(etafini, 3)*xkappa)*scalfun;        // Eq. (17) - the resulting nuclear response function 
+  double r0 = XN*xif/(am*TMath::Power(etafini, 3)*xkappa)*scalfun;      // Eq. (17) - the resulting nuclear response function 
   
   // non relativistic linhard function:
   //double r0 = XN/(2.d0*xkappa*fmn)*scalfun;
 
   // small functions Delta and Delta~
-  double d1 = (1.0 + xlambda)*(1.0 + xlambda) - xk2tau*tau1;
-  double d2 = xif*(1.0 + xlambda)*(1.0 + psi2);
-  double d3 = xif*xif*(1.0 + psi2 + psi2*psi2)/3.0;
+  double d1 = (1. + xlambda)*(1. + xlambda) - xk2tau*tau1;
+  double d2 = xif*(1. + xlambda)*(1. + psi2);
+  double d3 = xif*xif*(1. + psi2 + psi2*psi2)/3.;
   double delta = (d1 + d2 + d3)/xk2tau;                            
 
   /*
-  // alternative definition of delta (non pauli blocking)
-  double dd1 = xkappa*TMath::Sqrt(tau1/tau) + xif*(1.0-psi2)/3.0;
-  double delta = dd1*xif*(1.0 - psi2)/xk2tau;                             // Eq. (24)
+  // alternative definition of delta (non-Pauli blocking)
+  double d1 = xkappa*TMath::Sqrt(tau1/tau) + xif*(1.-psi2)/3.;
+  double delta = d1*xif*(1. - psi2)/xk2tau;                             // Eq. (24)
   */
 
-  double d4 = tau/xkappa*(xlambda + 1.0) - sqttau1;
-  double d5 = tau/xkappa*xif*(1.0 + psi2)/2.0;
+  double d4 = tau/xkappa*(xlambda + 1.) - sqttau1;
+  double d5 = tau/xkappa*xif*(1. + psi2)/2.;
   double deltat = (d4 + d5)/sqttau1;
   
   /*
-  // alternative definition of tilde delta (non pauli blocking)
-  double deltat = xif*(1.0 - psi2)/xkappa/sqt1t/2.0;                      // Eq. (36)
+  // alternative definition of tilde delta (non-Pauli blocking)
+  double deltat = xif*(1. - psi2)/xkappa/sqt1t/2.;                      // Eq. (36)
   */
   
   
@@ -235,13 +235,13 @@ double SuSAMstarQELCCPXSec::d2sQES_dEldCosThetal(const Interaction * interaction
   fFormFactors.Calculate(interaction);
   
   // The form factors to use in the vector current are twice the vector ones
-  double ge1 = fFormFactors.F1V() - tau*am*fFormFactors.xiF2V()/mN;   //  Eq. (22)
-  double gm1 = fFormFactors.F1V() + am*fFormFactors.xiF2V()/mN;       //  Eq. (23)
+  double ge1 = fFormFactors.F1V() - tau*am*fFormFactors.xiF2V()/mN;     //  Eq. (22)
+  double gm1 = fFormFactors.F1V() + am*fFormFactors.xiF2V()/mN;         //  Eq. (23)
   
-  //axial form factor A is not modified in the medium because in its definition in the axial current, Eq. (16), 
+  //axial form factor is not modified in the medium because in its definition in the axial current, Eq. (16), 
   // the nucleon mass does not appear explicit 
   double ga = fFormFactors.FA();
-  double gp = 2*am*fFormFactors.Fp()/mN;                                  //  Eq. (27)
+  double gp = 2*am*fFormFactors.Fp()/mN;                                //  Eq. (27)
   double gap = ga - tau*gp;
 
   // single nucleon invariant functions
@@ -249,57 +249,57 @@ double SuSAMstarQELCCPXSec::d2sQES_dEldCosThetal(const Interaction * interaction
   double w2vv = (ge1*ge1 + tau*gm1*gm1)/tau1;
   double w1aa = tau1*ga*ga;
   double w2aa = ga*ga;
-  double w4aa = gap*gap/(4.0*tau);
+  double w4aa = gap*gap/(4.*tau);
   double w3va = gm1*ga;
   double w3 = w3va;
   double w4 = w4aa;
 
   // VV responses  
-  double ucv = xk2tau*(tau1*w2vv - w1vv + w2vv*delta);                    //  Eq. (21), the first term of Eq. (20)
-  double uclv = -xlambda/xkappa*ucv;                                      //  the first term of Eq. (28)
-  double ulv = (xlambda/xkappa)*(xlambda/xkappa)*ucv;                     //  the first term of Eq. (29)
+  double ucv = xk2tau*(tau1*w2vv - w1vv + w2vv*delta);                  //  Eq. (21), the first term of Eq. (20)
+  double uclv = -xlambda/xkappa*ucv;                                    //  the first term of Eq. (28)
+  double ulv = (xlambda/xkappa)*(xlambda/xkappa)*ucv;                   //  the first term of Eq. (29)
   
   // AA responses conserved part
-  double ucac = xk2tau*(tau1*w2aa - w1aa + w2aa*delta);                   // Eq. (25), the second term of Eq. (20) (see (276) from Notes)
-  // double ucac = xk2tau*w2aa*delta;                                     // Eq. (25) for non-Pauli blocking case
-  double uclac = -xlambda/xkappa*ucac;                                    // the second term of Eq. (28)
-  double ulac = (xlambda/xkappa)*(xlambda/xkappa)*ucac;                   // the second term of Eq. (29)
+  double ucac = xk2tau*(tau1*w2aa - w1aa + w2aa*delta);                 // Eq. (25), the second term of Eq. (20) (see (276) from Notes)
+  // double ucac = xk2tau*w2aa*delta;                                   // Eq. (25) for non-Pauli blocking case
+  double uclac = -xlambda/xkappa*ucac;                                  // the second term of Eq. (28)
+  double ulac = (xlambda/xkappa)*(xlambda/xkappa)*ucac;                 // the second term of Eq. (29)
   
   // AA responses non conserved paer
-  double ucanc = 4.0*xlambda*xlambda*w4;                                  // Eq. (26), the third term of Eq. (20)
-  double uclanc = -4.0*xlambda*xkappa*w4;                                 // Eq. (30), the third term of Eq. (28)
-  double ulanc = 4.0*xkappa*xkappa*w4;                                    // Eq. (31), the third term of Eq. (29)
-  double uca = ucac + ucanc;                                              // Eq. (20), the sum of the last two terms: Eq. (25) and Eq. (26)
-  double ucla = uclac + uclanc;                                           // Eq. (28), the sum of the last two terms: Eq. (30)
-  double ula = ulac + ulanc;                                              // Eq. (29), the sum of the last two terms: Eq. (31)
+  double ucanc = 4.*xlambda*xlambda*w4;                                 // Eq. (26), the third term of Eq. (20)
+  double uclanc = -4.*xlambda*xkappa*w4;                                // Eq. (30), the third term of Eq. (28)
+  double ulanc = 4.*xkappa*xkappa*w4;                                   // Eq. (31), the third term of Eq. (29)
+  double uca = ucac + ucanc;                                            // Eq. (20), the sum of the last two terms: Eq. (25) and Eq. (26)
+  double ucla = uclac + uclanc;                                         // Eq. (28), the sum of the last two terms: Eq. (30)
+  double ula = ulac + ulanc;                                            // Eq. (29), the sum of the last two terms: Eq. (31)
   //double w2vv = f11*f11 + tau*f21*f21;
-  double utv = 2.0*w1vv + w2vv*delta;                                     // Eq. (33), the first  term of Eq. (32)
-  double uta = 2.0*w1aa + w2aa*delta;                                     // Eq. (34), the second term of Eq. (32)
-  double utp = 2.0*w3*sqttau1*(1.0 + deltat);                             // Eq. (35)
+  double utv = 2.*w1vv + w2vv*delta;                                    // Eq. (33), the first  term of Eq. (32)
+  double uta = 2.*w1aa + w2aa*delta;                                    // Eq. (34), the second term of Eq. (32)
+  double utp = 2.*w3*sqttau1*(1. + deltat);                             // Eq. (35)
 
 
   // total responses multiplied by R0
-  double rccv = ucv;                                                      // see Eq. (8), (20)
-  double rcca = uca;                                                      // see Eq. (8), (25), (26)
-  double rcc = rccv + rcca;                                               // Eq. (8)
+  double rccv = ucv;                                                    // see Eq. (8), (20)
+  double rcca = uca;                                                    // see Eq. (8), (25), (26)
+  double rcc = rccv + rcca;                                             // Eq. (8)
+                                                                        
+  double rclv = uclv;                                                   // see Eq. (9), (28)
+  double rcla = ucla;                                                   // see Eq. (9), (28), (30)
+  double rcl = rclv + rcla;                                             // Eq. (9)
+                                                                        
+  double rllv = ulv;                                                    // see Eq. (10), (29)
+  double rlla = ula;                                                    // see Eq. (10), (29), (31)
+  double rll = rllv + rlla;                                             // Eq. (10)
+                                                                        
+  double rtv  = utv;                                                    // see Eq. (11), (32), (33)
+  double rta  = uta;                                                    // see Eq. (11), (32), (34)
+  double rt  = rtv + rta;                                               // Eq. (11)
                                                                           
-  double rclv = uclv;                                                     // see Eq. (9), (28)
-  double rcla = ucla;                                                     // see Eq. (9), (28), (30)
-  double rcl = rclv + rcla;                                               // Eq. (9)
-                                                                          
-  double rllv = ulv;                                                      // see Eq. (10), (29)
-  double rlla = ula;                                                      // see Eq. (10), (29), (31)
-  double rll = rllv + rlla;                                               // Eq. (10)
-                                                                          
-  double rtv  = utv;                                                      // see Eq. (11), (32), (33)
-  double rta  = uta;                                                      // see Eq. (11), (32), (34)
-  double rt  = rtv + rta;                                                 // Eq. (11)
-                                                                          
-  double rtp  = utp;                                                      // Eq. (12), see Eq. (35)
+  double rtp  = utp;                                                    // Eq. (12), see Eq. (35)
   
-  double f = (rcc*vcc + 2.0*rcl*vcl + rll*vll + rt*vt + 2.0*sign*rtp*vtp)*r0;  // See Eq. (1)
-  double se0 = TMath::Power(kGF*fVud, 2)*xkmu*v0/4.0/kPi/enu;             // Eq. (2)
-  double dsigde = se0*f;                                                  // Eq. (1)
+  double f = (rcc*vcc + 2.*rcl*vcl + rll*vll + rt*vt + 2.*sign*rtp*vtp)*r0;  // See Eq. (1)
+  double se0 = TMath::Power(kGF*fVud, 2)*xkmu*v0/4./kPi/enu;            // Eq. (2)
+  double dsigde = se0*f;                                                // Eq. (1)
   
 
   return dsigde;
@@ -361,7 +361,7 @@ double SuSAMstarQELCCPXSec::dsQES_dQ2(const Interaction * interaction) const
   if (target.A()>1 && target.A()<4)
   {
     double Q2 = -q2;
-    double fQES_Pauli = 1.0-0.529*TMath::Exp((Q2*(228.0-531.0*Q2)-48.0)*Q2);
+    double fQES_Pauli = 1.-0.529*TMath::Exp((Q2*(228.-531.*Q2)-48.)*Q2);
     xsec *= fQES_Pauli;
   }
 
@@ -376,18 +376,18 @@ double SuSAMstarQELCCPXSec::dsQES_dQ2(const Interaction * interaction) const
   // 2) J.F. Beacom, S.J. Parke, Phys. Rev. D 64 (2001) 091302;
   // 3) A. Kurylov, M.J. Ramsey-Musolf, P. Vogel, Phys. Rev. C 65 (2002) 055501;
   // 4) A. Kurylov, M.J. Ramsey-Musolf, P. Vogel, Phys. Rev. C 67 (2003) 035502.
-  double rc = 1.0;
+  double rc = 1.;
   if ( (target.IsProton() && pdg::IsAntiNuE(init_state.ProbePdg())) || (target.IsNeutron() && pdg::IsNuE(init_state.ProbePdg()) ))
   {
     const double mp  = kProtonMass;
     const double mp2 = kProtonMass2;
     const double mn2 = kNeutronMass2;
-    const double Ee  = E + ( (q2 - mn2 + mp2) / 2.0 / mp ); 
-    assert(Ee > 0.0); // must be non-zero and positive
-    rc  = 6.0 + (1.5 * TMath::Log(kProtonMass / 2.0 / Ee));
+    const double Ee  = E + ( (q2 - mn2 + mp2) / 2. / mp ); 
+    assert(Ee > 0.); // must be non-zero and positive
+    rc  = 6. + (1.5 * TMath::Log(kProtonMass / 2. / Ee));
     rc += 1.2 * TMath::Power((kElectronMass / Ee), 1.5);
     rc *= kAem / kPi;
-    rc += 1.0;
+    rc += 1.;
   }
 
   xsec *= rc;
