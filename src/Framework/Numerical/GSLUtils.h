@@ -20,6 +20,8 @@
 #define _GSL_UTILS_H_
 
 #include <Math/AllIntegrationTypes.h>
+#include <string>
+using std::string;
 
 namespace genie {
 namespace utils {

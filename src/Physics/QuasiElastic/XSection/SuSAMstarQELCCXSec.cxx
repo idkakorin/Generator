@@ -188,7 +188,7 @@ double genie::utils::gsl::d2Xsec_dEldCosThetal::DoEval(const double * xin) const
   double cost   = 2*xin[1] - 1.0;
   double sint = TMath::Sqrt(1 - cost*cost);
   kinematics->SetFSLeptonP4(Pl*sint, 0, Pl*cost, El);
-  double xsec=fModel->XSec(fInteraction, kPSTlctl);
+  double xsec=fModel->XSec(fInteraction, kPSElctl);
   double J  = 2*(Enu - ml); // Jacobian for transformation 
   xsec *= J;
   

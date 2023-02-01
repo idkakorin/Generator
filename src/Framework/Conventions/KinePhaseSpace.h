@@ -64,9 +64,9 @@ typedef enum EKinePhaseSpace {
   kPSElOlTpifE,
   kPSTkTlctl,
   kPSQ2vfE,
-  kPSQELEvGen // Phase space used by genie::QELEventGenerator for sampling kinematic variables
+  kPSQELEvGen, // Phase space used by genie::QELEventGenerator for sampling kinematic variables
               // TODO: rename this value when the correct variables are identified
-
+  kPSElctl
 } KinePhaseSpace_t;
 
 class KinePhaseSpace
@@ -118,6 +118,7 @@ public:
       case(kPSQ2vfE)      : return "<{Q2,v}|E>"; break;
       // TODO: update this string when the appropriate kinematic variables are known
       case(kPSQELEvGen)   : return "<QELEvGen>"; break;
+      case(kPSElctl)      : return "<{El,cos(theta_l)}|E>";     break;
     }
     return "** Undefined kinematic phase space **";
   }

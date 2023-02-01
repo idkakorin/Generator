@@ -49,27 +49,46 @@ SuSAMstarQELCCPXSec::~SuSAMstarQELCCPXSec()
 //____________________________________________________________________________
 double SuSAMstarQELCCPXSec::XSec(const Interaction * interaction, KinePhaseSpace_t kps) const
 {
+  
+  double xsec = 0.;
+  // dimension of kine phase space
+  std::string s = KinePhaseSpace::AsString(kps);
+  int kpsdim = s!="<|E>"?1 + std::count(s.begin(), s.begin()+s.find('}'), ','):0;
+  
   if(! this -> ValidProcess (interaction) ) 
   {
      LOG("SuSAM*",pWARN) << "not a valid process"; 
      return 0.;
   }
-   
-  if(kps == kPSQ2fE) 
+
+  if(kpsdim == 1)
   {
      if(! this -> ValidKinematics (interaction) )
      {
         LOG("SuSAM*",pWARN) << "not valid kinematics"; 
         return 0.;
      }
-    return fXSecScale*this->dsQES_dQ2(interaction);
+     xsec = this->dsQES_dQ2(interaction);
+  }
+
+  if(kpsdim == 2) 
+  {
+    xsec = this->d2sQES_dEldCosThetal(interaction);
   }
   
-  if(kps == kPSTlctl) {
-    return fXSecScale*this->d2sQES_dEldCosThetal(interaction);
+  // The algorithm computes d^1xsec/dQ2, d^2xsec/dEldctl
+  // Check whether variable tranformation is needed
+  if ( kps != kPSQ2fE && kps != kPSElctl ) 
+  {
+     double J = 1.;
+     if (kpsdim == 1)
+       J = utils::kinematics::Jacobian(interaction, kPSQ2fE, kps);
+     else if (kpsdim == 2)
+       J = utils::kinematics::Jacobian(interaction, kPSElctl, kps);
+     xsec *= J;
   }
-  
-  return 0;
+
+  return fXSecScale*xsec;
   
 }
 //____________________________________________________________________________
@@ -87,7 +106,7 @@ double SuSAMstarQELCCPXSec::d2sQES_dEldCosThetal(const Interaction * interaction
   const TLorentzVector leptonMom = kinematics->FSLeptonP4();
   
   // The calculation of double differential cross section dsigma/dE_mu*dcos(theta_mu)
-  // according to the paper Physical Review D 97, 116006 (2018)
+  // according to Ref.1
   
   // one of the xsec terms changes sign for antineutrinos
   bool is_neutrino = pdg::IsNeutrino(init_state.ProbePdg());

@@ -7,8 +7,8 @@
           by SuSAM* model
           Is a concrete implementation of the XSecAlgorithmI interface. \n
 
-\ref      Physical Review D 97, 116006 (2018)
-          Physical Review C 98, 024627 (2018)
+\ref      1.Physical Review D 97 (2018) 116006
+          2.Physical Review C 98 (2018) 024627
 
 \author   I. Kakorin <kakorin@jinr.ru>,                Joint Institute for Nuclear Research \n
           V. Naumov  <vnaumov@theor.jinr.ru>,          Joint Institute for Nuclear Research \n

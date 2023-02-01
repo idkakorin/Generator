@@ -115,7 +115,7 @@ void QELEventGeneratorSuSAMstar::ProcessEventRecord(GHepRecord * evrec) const
   fIsHeavyNucleus = tgt->A()>=3;
 
   // phase space for heavy nucleus is different from light one
-  fkps = fIsHeavyNucleus?kPSTlctl:kPSQ2fE;
+  fkps = fIsHeavyNucleus?kPSElctl:kPSQ2fE;
   // Try to calculate the maximum cross-section in kinematical limits
   // if not pre-computed already
   
@@ -203,7 +203,7 @@ void QELEventGeneratorSuSAMstar::ProcessEventRecord(GHepRecord * evrec) const
         double sint = TMath::Sqrt(1 - cost*cost);
         double phi = 2*TMath::Pi()*rnd->RndKine().Rndm();
         kinematics->SetFSLeptonP4(Pl*sint*TMath::Cos(phi), Pl*sint*TMath::Sin(phi), Pl*cost, El);
-        xsec = fXSecModel->XSec(interaction, kPSTlctl);
+        xsec = fXSecModel->XSec(interaction, kPSElctl);
         
      
          //-- Decide whether to accept the current kinematics
@@ -236,9 +236,10 @@ void QELEventGeneratorSuSAMstar::ProcessEventRecord(GHepRecord * evrec) const
      
      
      // 4-momentum of final lepton in LAB frame
-     const TLorentzVector outLeptonMom = kinematics->FSLeptonP4();
+     TLorentzVector outLeptonMom = kinematics->FSLeptonP4();
+     outLeptonMom.RotateUz(neutrinoMom.Vect().Unit());
      
-     TLorentzVector transferMom = neutrinoMom - outLeptonMom;
+     const TLorentzVector transferMom = neutrinoMom - outLeptonMom;
      double gQ2 = -transferMom.Mag2();
      
      int rpdgc = interaction->RecoilNucleonPdg();
@@ -744,7 +745,7 @@ void QELEventGeneratorSuSAMstar::ComputeMaxsSubAreas(const Interaction * interac
     double Pl2  = El*El-m_lep*m_lep;
     double Pl = Pl2>0?TMath::Sqrt(Pl2):0;
     kinematics->SetFSLeptonP4(0, 0, Pl, El);
-    double F = fXSecModel->XSec(in, kPSTlctl);
+    double F = fXSecModel->XSec(in, kPSElctl);
     //std::cout << "f1(" << El << "," << cost << "): "<< F << std::endl;
     if (F > Fmax)
     {
@@ -861,7 +862,7 @@ void QELEventGeneratorSuSAMstar::ComputeMaxsSubAreas(const Interaction * interac
       double cost = Ys[0] + iy*(Ys[1]-Ys[0])/Ny;
       double sint   = TMath::Sqrt(1. - cost*cost);
       kinematics->SetFSLeptonP4(Pl*sint, 0, Pl*cost, El);
-      double F = fXSecModel->XSec(in, kPSTlctl);
+      double F = fXSecModel->XSec(in, kPSElctl);
       if (F > Fmax)
       {
         Fmax = F;
@@ -904,7 +905,7 @@ void QELEventGeneratorSuSAMstar::ComputeMaxsSubAreas(const Interaction * interac
       double cost = Ys[1] + iy*(Ys[2]-Ys[1])/Ny;
       double sint   = TMath::Sqrt(1. - cost*cost);
       kinematics->SetFSLeptonP4(Pl*sint, 0, Pl*cost, El);
-      double F = fXSecModel->XSec(in, kPSTlctl);
+      double F = fXSecModel->XSec(in, kPSElctl);
       //std::cout << "f1(" << El << "," << cost << "): "<< F << std::endl;
       if (F > Fmax)
       {
@@ -948,7 +949,7 @@ void QELEventGeneratorSuSAMstar::ComputeMaxsSubAreas(const Interaction * interac
       double cost = Ys[0] + iy*(Ys[1]-Ys[0])/Ny;
       double sint   = TMath::Sqrt(1. - cost*cost);
       kinematics->SetFSLeptonP4(Pl*sint, 0, Pl*cost, El);
-      double F = fXSecModel->XSec(in, kPSTlctl);
+      double F = fXSecModel->XSec(in, kPSElctl);
       //std::cout << "f1(" << El << "," << cost << "): "<< F << std::endl;
       if (F > Fmax)
       {
@@ -1022,7 +1023,7 @@ double genie::utils::gsl::d2Xsec_dEldCosThetal4Min::DoEval(const double * xin) c
   double cost = xin[1];
   double sint = TMath::Sqrt(1 - cost*cost);
   kinematics->SetFSLeptonP4(Pl*sint, 0, Pl*cost, El);
-  double xsec=fModel->XSec(fInteraction, kPSTlctl);
+  double xsec=fModel->XSec(fInteraction, kPSElctl);
   //std::cout << "f2(" << El << "," << cost << "): "<< xsec << std::endl;
   return -xsec;
 }
@@ -1068,7 +1069,7 @@ double genie::utils::gsl::d2Xsec_dEldCosThetal_fixed::DoEval(const double xin) c
   double Pl   = TMath::Sqrt(El*El - ml*ml);
   double sint = TMath::Sqrt(1 - cost*cost);
   kinematics->SetFSLeptonP4(Pl*sint, 0, Pl*cost, El);
-  double xsec=fModel->XSec(fInteraction, kPSTlctl);
+  double xsec=fModel->XSec(fInteraction, kPSElctl);
   
   return xsec-fRoot;
 }
@@ -1106,7 +1107,7 @@ double genie::utils::gsl::d2Xsec_dEldCosThetal4Min_fixed::DoEval(const double xi
   double El     = xin;
   double Pl = TMath::Sqrt(El*El - ml*ml);
   kinematics->SetFSLeptonP4(0, 0, Pl, El);
-  double xsec=fModel->XSec(fInteraction, kPSTlctl);
+  double xsec=fModel->XSec(fInteraction, kPSElctl);
   //std::cout << "f2(" << El << "," << 1.0 << "): "<< xsec << std::endl;
   return -xsec;
 }

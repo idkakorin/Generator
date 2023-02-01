@@ -200,7 +200,7 @@ double SuSAMstarUtils::PhaseSpaceVolume(KinePhaseSpace_t ps) const
    {
      vol = kinematics::PhaseSpaceVolume(fInteraction,kPSQ2fE);
    }
-   else if (ps == kPSTlctl)
+   else if (ps == kPSElctl)
    {
      vol = 2*(E_nu - m_lep);
    }
