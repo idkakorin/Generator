@@ -3,20 +3,20 @@
 
 \class    genie::SuSAMstarQELCCPXSec
 
-\brief    Computes neutrino-nucleus QELCC differential cross section
-          by SuSAM* model
-          Is a concrete implementation of the XSecAlgorithmI interface. \n
+\brief    Computes differential cross section of CCQE scatering muon neutrino on a nucleus within SuSAM* model.
+          Is a concrete implementation of the XSecAlgorithmI interface.
 
-\ref      1.Physical Review D 97 (2018) 116006
-          2.Physical Review C 98 (2018) 024627
+\ref
+             1. Ruiz Simo I., Martinez-Consentino V. L., Amaro J. E., Ruiz Arriola E.,  Phys.Rev.D 97 (2018) 116006
+             2. Amaro J. E., Ruiz Arriola E., Ruiz Simo I., Phys.Rev.C 98 (2018) 024627
 
-\author   I. Kakorin <kakorin@jinr.ru>,                Joint Institute for Nuclear Research \n
-          V. Naumov  <vnaumov@theor.jinr.ru>,          Joint Institute for Nuclear Research \n
-          adapted from fortran code provided by  \n
-          I. Ruiz Simo <ruizsig@ugr.es>,               University of Granada \n
-          V.L. Martinez-Consentino <victormc@ugr.es>,  University of Granada \n
-          J.E. Amaro <amaro@ugr.es>,                   University of Granada \n
-          E. Ruiz Arriola1 <earriola@ugr.es>,          University of Granada
+\authors   I. Kakorin <kakorin@jinr.ru>,                Joint Institute for Nuclear Research \n
+           V. Naumov  <vnaumov@theor.jinr.ru>,          Joint Institute for Nuclear Research \n
+           adapted from fortran code provided by  \n
+           I. Ruiz Simo <ruizsig@ugr.es>,               University of Granada \n
+           V.L. Martinez-Consentino <victormc@ugr.es>,  University of Granada \n
+           J.E. Amaro <amaro@ugr.es>,                   University of Granada \n
+           E. Ruiz Arriola1 <earriola@ugr.es>,          University of Granada
       
 
 \created  June 2019

@@ -3,10 +3,7 @@
 
 \class    genie::SuSAMstarUtils
 
-\brief    Contains auxiliary functions for SuSAM* model. \n
-
-\ref      Physical Review D 97, 116006 (2018)
-          Physical Review C 98, 024627 (2018)
+\brief    Contains auxiliary functions for SuSAM* model (classes SuSAMstarQELCCPXSec and QELEventGeneratorSuSAMstar)
 
 \author   I. Kakorin <kakorin@jinr.ru>,                Joint Institute for Nuclear Research \n
           V. Naumov  <vnaumov@theor.jinr.ru>,          Joint Institute for Nuclear Research \n
