@@ -143,7 +143,7 @@ double SuSAMstarQELCCPXSec::d2sQES_dEldCosThetal(const Interaction * interaction
   if (fourq2 >= 0)
     return 0.;
   
-  kinematics->Setq2(fourq2);
+  //kinematics->Setq2(fourq2);
   
   // kinematic factor
   double v0      = (enu+emu)*(enu+emu) - q2;
@@ -220,7 +220,8 @@ double SuSAMstarQELCCPXSec::d2sQES_dEldCosThetal(const Interaction * interaction
   if ( TMath::Abs((x - fa1)/fa2) > 5. && TMath::Abs((x - fb1)/fb2) > 5. ) return 0.;
   double f1 = fa3*TMath::Exp(-(x - fa1)*(x - fa1)/(2.*fa2*fa2));
   double f2 = fb3*TMath::Exp(-(x - fb1)*(x - fb1)/(2.*fb2*fb2));
-  double scalfun = f1 + f2; 
+  double f3 = 1 + fc3*TMath::Exp(-(x - fc1)/fc2)
+  double scalfun = (f1 + f2)/f3; 
   
   // Linhard function
   double r0 = XN*xif/(am*TMath::Power(etafini, 3)*xkappa)*scalfun;      // Eq. (17) - the resulting nuclear response function 
@@ -431,12 +432,12 @@ bool SuSAMstarQELCCPXSec::ValidProcess(const Interaction * interaction) const
   int  nuc = init_state.Tgt().HitNucPdg();
   int  nu  = init_state.ProbePdg();
 
-  bool isP   = pdg::IsProton(nuc);
-  bool isN   = pdg::IsNeutron(nuc);
-  bool isnu  = pdg::IsNeutrino(nu);
-  bool isnub = pdg::IsAntiNeutrino(nu);
+  bool isP     = pdg::IsProton(nuc);
+  bool isN     = pdg::IsNeutron(nuc);
+  bool isnumu  = pdg::IsNuMu(nu);
+  bool isnumub = pdg::IsAntiNuMu(nu);
 
-  bool prcok = proc_info.IsWeakCC() && ((isP&&isnub) || (isN&&isnu));
+  bool prcok = proc_info.IsWeakCC() && ((isP&&isnumub) || (isN&&isnumu));
   if(!prcok) return false;
 
   return true;
@@ -476,6 +477,8 @@ void SuSAMstarQELCCPXSec::LoadConfig(void)
   GetParam( "SuSAM-b1", fb1 );
   GetParam( "SuSAM-b2", fb2 );
   GetParam( "SuSAM-b3", fb3 );
+  GetParam( "SuSAM-b1", fc1 );
+  GetParam( "SuSAM-b2", fc2 );
 
    // load QEL form factors model
   fFormFactorsModel = dynamic_cast<const QELFormFactorsModelI *> (

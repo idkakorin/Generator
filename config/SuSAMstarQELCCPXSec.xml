@@ -14,11 +14,14 @@ XSec-Integrator                       alg      No
 CKM-Vud                               double   No         Vud element of CKM-matrix                  CommonParam[CKM]
 QEL-CC-XSecScale                      double   Yes        Scaling factor                             GPL value
 SuSAM-a1                              double   No         parameters of the first gaussian f1
-SuSAM-a2                              double   No         for SuSAM* scaling function f=f1+f2
+SuSAM-a2                              double   No         for SuSAM* scaling function f=(f1+f2)/f3
 SuSAM-a3                              double   No         f1=a3*exp[-(psi*-a1)^2/(2*a2^2)]
 SuSAM-b1                              double   No         parameters of the second gaussian f2
-SuSAM-b2                              double   No         for SuSAM* scaling function f=f1+f2
+SuSAM-b2                              double   No         for SuSAM* scaling function f=(f1+f2)/f3
 SuSAM-b3                              double   No         f2=b3*exp[-(psi*-b1)^2/(2*b2^2)]
+SuSAM-c1                              double   No         parameters of the third gaussian f2
+SuSAM-c2                              double   No         for SuSAM* scaling function f=(f1+f2)/f3
+SuSAM-c3                              double   No         f3=c3*exp[-(psi-c1)/c2)]
 
 -->
 
@@ -37,6 +40,9 @@ SuSAM-b3                              double   No         f2=b3*exp[-(psi*-b1)^2
     <param type="double" name="SuSAM-b1">       0.706697                             </param>
     <param type="double" name="SuSAM-b2">       1.07336                              </param>
     <param type="double" name="SuSAM-b3">       0.202383                             </param>
+    <param type="double" name="SuSAM-c1">       -0.9765                              </param>
+    <param type="double" name="SuSAM-c2">       0.1716                               </param>
+    <param type="double" name="SuSAM-c3">       1.0000                               </param>
     
     <!--  lower value of band  
     <param type="double" name="SuSAM-a1">       0.96702                              </param>
@@ -45,6 +51,9 @@ SuSAM-b3                              double   No         f2=b3*exp[-(psi*-b1)^2
     <param type="double" name="SuSAM-b1">       -0.0269651                           </param>
     <param type="double" name="SuSAM-b2">       0.442309                             </param>
     <param type="double" name="SuSAM-b3">       0.598216                             </param>
+    <param type="double" name="SuSAM-c1">       -0.8549                              </param>
+    <param type="double" name="SuSAM-c2">        0.0337                              </param>
+    <param type="double" name="SuSAM-c3">       1.0000                               </param>
     -->
     
     <!--  upper value of band  
@@ -54,6 +63,9 @@ SuSAM-b3                              double   No         f2=b3*exp[-(psi*-b1)^2
     <param type="double" name="SuSAM-b1">        0.965166                            </param>
     <param type="double" name="SuSAM-b2">        1.2798                              </param>
     <param type="double" name="SuSAM-b3">        0.199749                            </param>
+    <param type="double" name="SuSAM-c1">       -1.0058                              </param>
+    <param type="double" name="SuSAM-c2">        1.9235                              </param>
+    <param type="double" name="SuSAM-c3">       1.0000                               </param>
     -->
   
   </param_set>
