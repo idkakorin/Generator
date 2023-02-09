@@ -8,37 +8,31 @@
 
 \ref
              1. Amaro J. E., Ruiz Arriola E., Ruiz Simo I., Phys.Rev.C 92 (2015) 054607
-
-\authors   I. Kakorin <kakorin@jinr.ru>,                Joint Institute for Nuclear Research \n
-           V. Naumov  <vnaumov@theor.jinr.ru>,          Joint Institute for Nuclear Research \n
-           adapted from fortran code provided by  \n
-           I. Ruiz Simo <ruizsig@ugr.es>,               University of Granada \n
-           V.L. Martinez-Consentino <victormc@ugr.es>,  University of Granada \n
-           J.E. Amaro <amaro@ugr.es>,                   University of Granada \n
-           E. Ruiz Arriola1 <earriola@ugr.es>,          University of Granada
+             2. Amaro J. E., Ruiz Arriola E., Ruiz Simo I., Phys.Rev.C 98 (2018) 024627
+             3. de Forest T. Jr., Walecka J.D., Adv.Phys. 15(57) (1966) 1-109
       
 
-\created  June 2019
+\created  January 2023
 
-\cpright  Copyright (c) 2003-2019, The GENIE Collaboration
+\cpright  Copyright (c) 2003-2023, The GENIE Collaboration
           For the full text of the license visit http://copyright.genie-mc.org
           or see $GENIE/LICENSE
 */
 //____________________________________________________________________________
 
-#ifndef _SUSAMSTAR_QELCC_CROSS_SECTION_H_
-#define _SUSAMSTAR_QELCC_CROSS_SECTION_H_
+#ifndef _SUSAMSTAR_EM_CROSS_SECTION_H_
+#define _SUSAMSTAR_EM_CROSS_SECTION_H_
 
 #include <vector>
 #include <map>
 
 #include "Framework/EventGen/XSecAlgorithmI.h"
-#include "Physics/QuasiElastic/XSection/QELFormFactors.h"
+#include "Physics/QuasiElastic/XSection/ELFormFactors.h"
 #include "Physics/QuasiElastic/XSection/SuSAMstarUtils.h"
 
 namespace genie {
 
-class QELFormFactorsModelI;
+class ELFormFactorsModelI;
 class XSecIntegratorI;
 
 class SuSAMstarEMPXSec : public XSecAlgorithmI {
@@ -62,21 +56,15 @@ private:
   mutable SuSAMstarUtils * sm_utils;
   
   void   LoadConfig (void);
-  mutable QELFormFactors       fFormFactors;      ///<
-  const QELFormFactorsModelI * fFormFactorsModel; ///<
+  mutable ELFormFactors        fFormFactors;      ///<
+  const ELFormFactorsModelI  * fFormFactorsModel; ///<
   const XSecIntegratorI *      fXSecIntegrator;   ///<
-  double                       fVud;             ///< |Vud|- magnitude of ud-element of CKM-matrix
 
   double                       fXSecScale;        ///< external xsec scaling factor
   
-  double fa1, fa2, fa3, fb1, fb2, fb3;            ///< parameters of the first gaussian f1 for SuSAM* scaling function 
-                                                  ///< f=a3*exp[-(psi*-a1)^2/(2*a2^2)]+b3*exp[-(psi*-b1)^2/(2*b2^2)]
-                                                                  
-  //Functions needed to calculate XSec:                           
-
-  double d2sQES_dEldCosThetal(const Interaction * i) const;
-  double dsQES_dQ2(const Interaction * i) const;
+  double fa1, fa2, fa3, fb1, fb2, fb3, fc1, fc2, fc3;            ///< parameters of the first gaussian f1 for SuSAM* scaling function 
+                                                                 ///< f = (a3*exp[-(psi*-a1)^2/(2*a2^2)]+b3*exp[-(psi*-b1)^2/(2*b2^2)])/(1+c3*exp[-(psi-c1)/c2])
 
 };
 }       // genie namespace
-#endif  // _SUSAMSTAR_QELCC_CROSS_SECTION_H_
+#endif  // _SUSAMSTAR_EM_CROSS_SECTION_H_

@@ -1,17 +1,9 @@
 //____________________________________________________________________________
 /*
- Copyright (c) 2003-2019, The GENIE Collaboration
+ Copyright (c) 2003-2023, The GENIE Collaboration
  For the full text of the license visit http://copyright.genie-mc.org
  or see $GENIE/LICENSE
 
- Authors: I. Kakorin <kakorin@jinr.ru>,                Joint Institute for Nuclear Research
-          V. Naumov  <vnaumov@theor.jinr.ru>,          Joint Institute for Nuclear Research
-          adapted from  fortran code provided by 
-          I. Ruiz Simo <ruizsig@ugr.es>,               University of Granada
-          V.L. Martinez-Consentino <victormc@ugr.es>,  University of Granada
-          J.E. Amaro <amaro@ugr.es>,                   University of Granada
-          E. Ruiz Arriola1 <earriola@ugr.es>,          University of Granada
- 
  For the class documentation see the corresponding header file.
 
 */
@@ -23,6 +15,7 @@
 #include "Framework/Conventions/RefFrame.h"
 #include "Framework/ParticleData/PDGLibrary.h"
 #include "Framework/ParticleData/PDGUtils.h"
+#include "Framework/ParticleData/PDGCodes.h"
 #include "Physics/XSectionIntegration/XSecIntegratorI.h"
 #include "Physics/QuasiElastic/XSection/SuSAMstarEMPXSec.h"
 
@@ -62,6 +55,9 @@ double SuSAMstarEMPXSec::XSec(const Interaction * interaction, KinePhaseSpace_t 
   
   const InitialState & init_state = interaction -> InitState();
   const Target & target = init_state.Tgt();
+  int N = target.N();
+  int Z = target.Z();
+  int A = target.A();
   
   
   const TLorentzVector leptonMom = kinematics->FSLeptonP4();
@@ -102,9 +98,13 @@ double SuSAMstarEMPXSec::XSec(const Interaction * interaction, KinePhaseSpace_t 
   
   if (Q2 <= 0)
     return 0.;
+    
+  double sin_halftheta2  = (1 - cost)/2;
+  double cos_halftheta2  = (1 + cost)/2;
   
+  // Values defined underneath Eq.(5)
   double vl = Q2*Q2/q2/q2;
-  double vt = (1 - cost)/(1 + cost) - Q2/q2/2;
+  double vt = sin_halftheta2/cos_halftheta2 + Q2/q2/2;
   
   // adimensional variables
   double kappa  = q/meff/2;
@@ -113,46 +113,53 @@ double SuSAMstarEMPXSec::XSec(const Interaction * interaction, KinePhaseSpace_t 
   double tau    = kappa2 - lambda*lambda;
   double tau1   = tau + 1;
   double k2tau  = kappa2/tau;
-//  double sqttau1 = TMath::Sqrt(tau*tau1); // tau*tau1 is always greater than 0 if Q2>0
   
-  Interaction  * interaction_copy = new Interaction(interaction);
-  InitialState * init_state_copy = interaction_copy->InitStatePtr();
-  Target * target_copy = init_state_copy->TgtPtr();
   
   // Calculate the EM form factors and response functions for proton and neutron
+  fFormFactors.Calculate(interaction);
+  double Ge, Gm, fmN;
+  int xN;
   double R = 0;
-  for (t = 0; t < 2; t++)
+  for (int t = 0; t < 2; t++)
   {
-    int N;
     if (t == 0)
     {
-      target_copy->SetHitNucPdg(kProton);
-      double fmN     = fm*TMath::Power(2.*Z/A, 1./3);
-      N = target.N();
+      fmN     = fm*TMath::Power(2.*Z/A, 1./3);
+      xN = N;
+      double M0 = PDGLibrary::Instance()->Find(kPdgProton)->Mass();
+      double tau0 = -Q2/4/M0/M0;
+      double T0 = 1/(1 - tau0);
+      double F1p = T0*(fFormFactors.Gep() - fFormFactors.Gmp()*tau0);
+      double F2p = T0*(fFormFactors.Gmp() - fFormFactors.Gep());
+      Ge = F1p - meff*F2p*tau/mN;                                     //  Eq. (14)
+      Gm = F1p + meff*F2p/mN;                                         //  Eq. (15)
     }
     else
     {
-      target_copy->SetHitNucPdg(kNeutron);
-      double fmN     = fm*TMath::Power(2.*N/A, 1./3);
-      N = target.Z();
+      fmN     = fm*TMath::Power(2.*N/A, 1./3);
+      xN = Z;
+      double M0 = PDGLibrary::Instance()->Find(kPdgNeutron)->Mass();
+      double tau0 = -Q2/4/M0/M0;
+      double T0 = 1/(1 - tau0);
+      double F1n = T0*(fFormFactors.Gen() - fFormFactors.Gmn()*tau0);
+      double F2n = T0*(fFormFactors.Gmn() - fFormFactors.Gen());
+      Ge = F1n - meff*F2n*tau/mN;                                     //  Eq. (14)
+      Gm = F1n + meff*F2n/mN;                                         //  Eq. (15)
     }
   
-    fFormFactors.Calculate(interaction_copy);
-    double Ge = .5*(fFormFactors.F1V() - tau*meff*fFormFactors.xiF2V()/mN);     //  Eq. ()
-    double Gm = .5*(fFormFactors.F1V() + meff*fFormFactors.xiF2V()/mN);         //  Eq. ()
   
     double etaf    = fmN/meff;
     double epsif   = TMath::Sqrt(1 + etaf*etaf);                   // 1. + etaf*etaf is always greater than 0
     double sqt1t   = TMath::Sqrt(tau1/tau);                        // tau1/tau is always greater than 0 if Q2>0
-    double xifp    = epsif - 1;
+    double xif     = epsif - 1;
     double e1      = kappa*sqt1t - lambda;
-    double e2      = epsifn - 2*lambda;
+    double e2      = epsif - 2*lambda;
     double e0      = TMath::Max(e1, e2);                           // for non-Pauli blocking e0 = e1
     double xi0     = e0 - 1;
     
     
     // scaling variable psi^2
-    double psi2 = xi0/xif;   // Eq. ()
+    double psi2 = xi0/xif;   // Eqs. (16) and (17)
     
     // small functions Delta
     double d1    = (1 + lambda)*(1 + lambda) - k2tau*tau1;
@@ -163,8 +170,8 @@ double SuSAMstarEMPXSec::XSec(const Interaction * interaction, KinePhaseSpace_t 
     // single nucleon invariant functions
     double w1vv = tau*Gm*Gm;
     double w2vv = (Ge*Ge + tau*Gm*Gm)/tau1;
-    double Ul = k2tau*(tau1*w2vv - w1vv + w2vv*delta);                  // Eq. ()
-    double Ut = 2*w1vv + w2vv*delta;                                    // Eq. ()
+    double Ul = k2tau*(tau1*w2vv - w1vv + w2vv*delta);                  // Eq. (11)
+    double Ut = 2*w1vv + w2vv*delta;                                    // Eq. (12)
     
 
     // scaling functions
@@ -176,32 +183,33 @@ double SuSAMstarEMPXSec::XSec(const Interaction * interaction, KinePhaseSpace_t 
     */ 
   
     // Phenomenological scaling function  central
-    // calculation of scaling function by Eq. ()
+    // calculation of scaling function by Eq. (23) of Ref.2
     if (psi2 < 0.)  psi2 = 0.;
     double psi = TMath::Sqrt(psi2);   // there is strong evidence that psi2>=0
-    if(xlambda <= tau) 
+    if(lambda <= tau) 
        psi = -psi;
     double x = psi;
     if ( TMath::Abs((x - fa1)/fa2) > 5. && TMath::Abs((x - fb1)/fb2) > 5. ) return 0.;
     double f1 = fa3*TMath::Exp(-(x - fa1)*(x - fa1)/(2.*fa2*fa2));
     double f2 = fb3*TMath::Exp(-(x - fb1)*(x - fb1)/(2.*fb2*fb2));
-    double f3 = 1 + fc3*TMath::Exp(-(x - fc1)/fc2)
+    double f3 = 1 + fc3*TMath::Exp(-(x - fc1)/fc2);
     double scalfun = (f1 + f2)/f3; 
     
-    // Linhard function
-    double r0 = N*xif/(meff*TMath::Power(etaf, 3)*kappa)*scalfun;       // Eq. () - the resulting nuclear response function 
-  
-    // non relativistic linhard function:
-    //double r0 = XN/(2.d0*xkappa*fmn)*scalfun;
-    
-    R += (Ul*vl + Ut*vt)*r0;                                            // Eq. ()
+    // Eqs. (8)-(10) - the resulting nuclear response function 
+    double r0 = xN*xif/(meff*TMath::Power(etaf, 3)*kappa)*scalfun;
+    R += (Ul*vl + Ut*vt)*r0;                                            
 
   }
-  delete interaction_copy;
   
-  double sin_halftheta2  = (1 - cost)/2;
-  double sMott           = kAem2/4/Ei/Ei/sin_halftheta2/sin_halftheta2*(1 - beta2*sin_halftheta2);       // Eq. ()
-  double xsec            = sMott*R;                                                                      // Eq. ()
+ 
+// Eq. (10a) A. Minten, Electron scattering, form factors, vector mesons, CERN-69-22 Report
+//  double sMott           = kAem2/4/Ei/Ei/sin_halftheta2/sin_halftheta2*(1 - beta2*sin_halftheta2);
+// Eq. (2.47) S. M. Bilenky, Lectures on physics of neutrino and lepton-nucleon processes, Moscow, Energoizdat, 1981
+//  double sMott           = kAem2*cos_halftheta2/4/Ei/Ei/sin_halftheta2/sin_halftheta2/(1 + 2*Ei*TMath::Sqrt(sin_halftheta2)/mN);
+  //Eq. (3.65) of Ref. 3
+  double sMott = kAem2*cos_halftheta2/4./Ei/Ei/sin_halftheta2/sin_halftheta2; 
+
+  double xsec            = 2*kPi*sMott*R;                                                                // Eq. (5)
   
   // The algorithm computes d^2xsec/dEldctl
   // Check whether variable tranformation is needed
@@ -268,8 +276,6 @@ void SuSAMstarEMPXSec::Configure(string config)
 void SuSAMstarEMPXSec::LoadConfig(void)
 {
   
-  GetParam( "CKM-Vud", fVud ) ;
-
   // Cross section scaling factor
   GetParam( "EM-XSecScale", fXSecScale ) ;
 
@@ -283,11 +289,11 @@ void SuSAMstarEMPXSec::LoadConfig(void)
   GetParam( "SuSAM-b3", fb3 );
   GetParam( "SuSAM-b1", fc1 );
   GetParam( "SuSAM-b2", fc2 );
-
-   // load QEL form factors model
-  fFormFactorsModel = dynamic_cast<const QELFormFactorsModelI *> (
-                                             this->SubAlg("FormFactorsAlg"));
+  
+  // load EM form factors model
+  fFormFactorsModel = dynamic_cast<const ELFormFactorsModelI *> (this->SubAlg("ElasticFormFactorsModel"));
   assert(fFormFactorsModel);
+  
   fFormFactors.SetModel(fFormFactorsModel); // <-- attach algorithm
 
   // load XSec Integrator

@@ -70,8 +70,8 @@ private:
 
   double                       fXSecScale;        ///< external xsec scaling factor
   
-  double fa1, fa2, fa3, fb1, fb2, fb3;            ///< parameters of the first gaussian f1 for SuSAM* scaling function 
-                                                  ///< f=a3*exp[-(psi*-a1)^2/(2*a2^2)]+b3*exp[-(psi*-b1)^2/(2*b2^2)]
+  double fa1, fa2, fa3, fb1, fb2, fb3, fc1, fc2, fc3;            ///< parameters of the first gaussian f1 for SuSAM* scaling function 
+                                                                 ///< f = (a3*exp[-(psi*-a1)^2/(2*a2^2)]+b3*exp[-(psi*-b1)^2/(2*b2^2)])/(1+c3*exp[-(psi-c1)/c2])
                                                                   
   //Functions needed to calculate XSec:                           
 

@@ -211,7 +211,7 @@ double SuSAMstarQELCCPXSec::d2sQES_dEldCosThetal(const Interaction * interaction
   */ 
   
   // Phenomenological scaling function  central
-  // calculation of scaling function by Eq. (37)
+  // calculation of scaling function by Eq. (23) of Ref.2
   if (psi2 < 0.)  psi2 = 0.;
   double psi = TMath::Sqrt(psi2);   // there is strong evidence that psi2>=0
   if(xlambda <= tau) 
@@ -220,7 +220,7 @@ double SuSAMstarQELCCPXSec::d2sQES_dEldCosThetal(const Interaction * interaction
   if ( TMath::Abs((x - fa1)/fa2) > 5. && TMath::Abs((x - fb1)/fb2) > 5. ) return 0.;
   double f1 = fa3*TMath::Exp(-(x - fa1)*(x - fa1)/(2.*fa2*fa2));
   double f2 = fb3*TMath::Exp(-(x - fb1)*(x - fb1)/(2.*fb2*fb2));
-  double f3 = 1 + fc3*TMath::Exp(-(x - fc1)/fc2)
+  double f3 = 1 + fc3*TMath::Exp(-(x - fc1)/fc2);
   double scalfun = (f1 + f2)/f3; 
   
   // Linhard function
@@ -275,9 +275,9 @@ double SuSAMstarQELCCPXSec::d2sQES_dEldCosThetal(const Interaction * interaction
   double w4 = w4aa;
 
   // VV responses  
-  double ucv = xk2tau*(tau1*w2vv - w1vv + w2vv*delta);                  //  Eq. (21), the first term of Eq. (20)
-  double uclv = -xlambda/xkappa*ucv;                                    //  the first term of Eq. (28)
-  double ulv = (xlambda/xkappa)*(xlambda/xkappa)*ucv;                   //  the first term of Eq. (29)
+  double ucv = xk2tau*(tau1*w2vv - w1vv + w2vv*delta);                  // Eq. (21), the first term of Eq. (20)
+  double uclv = -xlambda/xkappa*ucv;                                    // the first term of Eq. (28)
+  double ulv = (xlambda/xkappa)*(xlambda/xkappa)*ucv;                   // the first term of Eq. (29)
   
   // AA responses conserved part
   double ucac = xk2tau*(tau1*w2aa - w1aa + w2aa*delta);                 // Eq. (25), the second term of Eq. (20) (see (276) from Notes)
