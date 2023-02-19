@@ -14,40 +14,22 @@ gsl-max-size-of-subintervals int      Yes        GSL maximum number of sub-inter
 gsl-relative-tolerance       double   Yes        GSL max evaluations for 1D integrator        1e-3
 gsl-rule                     int      Yes        GSL Gauss-Kronrod integration rule           3
                                                  (only for GSL 1D adaptive type)      
-gsl-integration-type-2D      string   Yes        name of GSL 2D numerical integrator          adaptive
-gsl-max-eval                 int      Yes        required relative tolerance (error)          1000000000
+gsl-integration-type-2D      string   Yes        name of GSL 2D numerical integrator          miser
+gsl-max-eval                 int      Yes        required relative tolerance (error)          5000000
                                                  for 2D integrator
-gsl-relative-tolerance-2D    double   Yes        GSL max evaluations for 2D integrator        1e-7
-Emax                         double   Yes        The maximum energy after which               45.0
+gsl-relative-tolerance-2D    double   Yes        GSL max evaluations for 2D integrator        1e-3
+Emax                         double   Yes        The maximum energy after which               100.0
                                                  the xsec is assumed constant
+theta_min                double   Yes            The minimal angle of outgoing lepton         0. 
 .....................................................................................................
 -->
 
   <param_set name="Default"> 
   </param_set>
   
-<!-- 
-     Alternative configuration for integrator.
-     The miser is slower than adaptive, but can integrate up to 100.0 GeV.
--->
-  <param_set name="Miser"> 
-    <param type="string" name = "gsl-integration-type-2D">           miser  </param>
-    <param type="int"    name = "gsl-max-eval">                    5000000  </param>
-    <param type="double" name = "gsl-relative-tolerance-2D">          1e-3  </param>
-    <param type="double" name = "Emax">                              100.0  </param>
+  <param_set name="EM">
+     <param type="double"  name="theta_min">  0.01  </param>
   </param_set>
-  
-<!-- 
-     Alternative configuration for integrator.
-     The vegas is slower than miser, but more precise.
--->
-  <param_set name="Vegas"> 
-    <param type="string" name = "gsl-integration-type-2D">           vegas  </param>
-    <param type="int"    name = "gsl-max-eval">                    5000000  </param>
-    <param type="double" name = "gsl-relative-tolerance-2D">          1e-3  </param>
-    <param type="double" name = "Emax">                              100.0  </param>
-  </param_set> 
-  
 
 </alg_conf>
 

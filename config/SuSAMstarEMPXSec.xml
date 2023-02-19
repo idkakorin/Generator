@@ -9,9 +9,8 @@ Configurable Parameters:
 .....................................................................................................................
 Name                                  Type     Optional   Comment                                    Default
 ......................................................................................................................
-FormFactorsAlg                        alg      No         QEL form factors algorithm
+FormFactorsAlg                        alg      No         Elastic form factors algorithm             CommonParam[ElasticFF]
 XSec-Integrator                       alg      No
-CKM-Vud                               double   No         Vud element of CKM-matrix                  CommonParam[CKM]
 QEL-CC-XSecScale                      double   Yes        Scaling factor                             GPL value
 SuSAM-a1                              double   No         parameters of the first gaussian f1
 SuSAM-a2                              double   No         for SuSAM* scaling function f=(f1+f2)/f3
@@ -27,11 +26,11 @@ SuSAM-c3                              double   No         f3=c3*exp[-(psi-c1)/c2
 
   <param_set name="Default">
 
-    <param type="string"  name="CommonParam"> CKM                                    </param>
+    <param type="string"  name="CommonParam"> ElasticFF                              </param>
 
-    <param type="double" name="QEL-CC-XSecScale">     1.000                          </param>
+    <param type="double" name="EM-XSecScale">     1.000                          </param>
 
-    <param type="alg"  name="XSec-Integrator"> genie::SuSAMstarQELCCXSec             </param>
+    <param type="alg"  name="XSec-Integrator"> genie::SuSAMstarQELCCXSec/EM     </param>
     
     <!-- central value of band  -->
     <param type="double" name="SuSAM-a1">      -0.0465038                            </param>
@@ -70,20 +69,5 @@ SuSAM-c3                              double   No         f3=c3*exp[-(psi-c1)/c2
   
   </param_set>
 
-
-  <param_set name="Dipole"> 
-     <param type="alg"  name="FormFactorsAlg">  genie::LwlynSmithFFCC/Dipole  </param>
- 
-   </param_set>
-
-  <param_set name="ZExp"> 
-     <param type="alg"  name="FormFactorsAlg">  genie::LwlynSmithFFCC/ZExp    </param>
- 
-  </param_set>
-
-  <param_set name="RunningMA"> 
-     <param type="alg"  name="FormFactorsAlg">  genie::LwlynSmithFFCC/RunningMA </param>
-
-  </param_set>
 
 </alg_conf>

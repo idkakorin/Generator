@@ -143,6 +143,7 @@
    <config alg="genie::NievesQELCCPXSec">                   NievesQELCCPXSec.xml                   </config>
    <config alg="genie::SmithMonizQELCCPXSec">               SmithMonizQELCCPXSec.xml               </config>
    <config alg="genie::SuSAMstarQELCCPXSec">                SuSAMstarQELCCPXSec.xml                </config>
+   <config alg="genie::SuSAMstarEMPXSec">                   SuSAMstarEMPXSec.xml                   </config>
    <config alg="genie::QPMDMDISPXSec">                      QPMDMDISPXSec.xml                      </config>
    <config alg="genie::QPMDISPXSec">                        QPMDISPXSec.xml                        </config>
    <config alg="genie::AivazisCharmPXSecLO">                AivazisCharmPXSecLO.xml                </config>

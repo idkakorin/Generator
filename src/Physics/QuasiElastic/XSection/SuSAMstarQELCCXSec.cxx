@@ -28,6 +28,7 @@
 #include "Framework/Utils/Range1.h"
 #include "Framework/Numerical/GSLUtils.h"
 
+
 using namespace genie;
 using std::ostringstream;
 
@@ -101,7 +102,7 @@ double SuSAMstarQELCCXSec::Integrate(
      double abstol = 0; //We mostly care about relative tolerance.
      
      ROOT::Math::IntegrationMultiDim::Type ig_type = utils::gsl::IntegrationNDimTypeFromString(fGSLIntgType2D);
-     ROOT::Math::IBaseFunctionMultiDim * func = new utils::gsl::d2Xsec_dEldCosThetal(model, interaction);
+     ROOT::Math::IBaseFunctionMultiDim * func = new utils::gsl::d2Xsec_dEldCosThetal(model, interaction, TMath::Cos(ftheta_min));
      ROOT::Math::IntegratorMultiDim ig(*func, ig_type, abstol, fGSLRelTol2D, fGSLMaxEval);
      xsec = ig.Integral(kine_min, kine_max) * (1E-38 * units::cm2);
      delete func;
@@ -138,10 +139,11 @@ void SuSAMstarQELCCXSec::LoadConfig(void)
   GetParamDef( "gsl-rule", rule, 3);
   fGSLRule = (unsigned int) rule;
   if (fGSLRule>6) fGSLRule=3;
-  GetParamDef( "gsl-integration-type-2D", fGSLIntgType2D, string("adaptive") );
-  GetParamDef( "gsl-relative-tolerance-2D", fGSLRelTol2D, 1e-7);
-  GetParamDef( "gsl-max-eval", fGSLMaxEval, 1000000000);
-  GetParamDef( "Emax", fEmax, 45.0);
+  GetParamDef( "gsl-integration-type-2D", fGSLIntgType2D, string("miser") );
+  GetParamDef( "gsl-relative-tolerance-2D", fGSLRelTol2D, 1e-3);
+  GetParamDef( "gsl-max-eval", fGSLMaxEval, 5000000);
+  GetParamDef( "Emax", fEmax, 100.0);
+  GetParamDef( "theta_min", ftheta_min, 0.);
   fXSecAtEmax = -1.0;
   
 }
@@ -150,10 +152,11 @@ void SuSAMstarQELCCXSec::LoadConfig(void)
 //_____________________________________________________________________________
 // GSL wrappers
 //____________________________________________________________________________
-genie::utils::gsl::d2Xsec_dEldCosThetal::d2Xsec_dEldCosThetal(const XSecAlgorithmI * m, const Interaction * interaction) :
+genie::utils::gsl::d2Xsec_dEldCosThetal::d2Xsec_dEldCosThetal(const XSecAlgorithmI * m, const Interaction * interaction, double cos_theta_max) :
 ROOT::Math::IBaseFunctionMultiDim(),
 fModel(m),
-fInteraction(interaction)
+fInteraction(interaction),
+fcos_theta_max(cos_theta_max)
 {
 
 }
@@ -177,16 +180,15 @@ double genie::utils::gsl::d2Xsec_dEldCosThetal::DoEval(const double * xin) const
 //   differential cross section [10^-38 cm^2]
 //
  
-    
   Kinematics * kinematics = fInteraction->KinePtr();
   double Enu = fInteraction->InitState().ProbeE(kRfLab);
   double ml   = fInteraction->FSPrimLepton()->Mass();
   if (Enu < ml) return 0.0;
   
   double El     = (Enu - ml)*xin[0] + ml;
-  double Pl = TMath::Sqrt(El*El - ml*ml);
-  double cost   = 2*xin[1] - 1.0;
-  double sint = TMath::Sqrt(1 - cost*cost);
+  double Pl     = TMath::Sqrt(El*El - ml*ml);
+  double cost   = (fcos_theta_max + 1)*xin[1] - 1;
+  double sint   = TMath::Sqrt(1 - cost*cost);
   kinematics->SetFSLeptonP4(Pl*sint, 0, Pl*cost, El);
   double xsec=fModel->XSec(fInteraction, kPSElctl);
   double J  = 2*(Enu - ml); // Jacobian for transformation 
@@ -198,6 +200,6 @@ double genie::utils::gsl::d2Xsec_dEldCosThetal::DoEval(const double * xin) const
 ROOT::Math::IBaseFunctionMultiDim *
    genie::utils::gsl::d2Xsec_dEldCosThetal::Clone() const
 {
-  return new genie::utils::gsl::d2Xsec_dEldCosThetal(fModel, fInteraction);
+  return new genie::utils::gsl::d2Xsec_dEldCosThetal(fModel, fInteraction, fcos_theta_max);
 }
 

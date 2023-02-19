@@ -19,6 +19,7 @@
 #include "Physics/XSectionIntegration/XSecIntegratorI.h"
 #include "Physics/QuasiElastic/XSection/SuSAMstarEMPXSec.h"
 
+
 using namespace genie;
 using namespace genie::constants;
 
@@ -98,6 +99,8 @@ double SuSAMstarEMPXSec::XSec(const Interaction * interaction, KinePhaseSpace_t 
   
   if (Q2 <= 0)
     return 0.;
+    
+  kinematics->SetQ2(Q2);
     
   double sin_halftheta2  = (1 - cost)/2;
   double cos_halftheta2  = (1 + cost)/2;
@@ -202,12 +205,10 @@ double SuSAMstarEMPXSec::XSec(const Interaction * interaction, KinePhaseSpace_t 
   }
   
  
-// Eq. (10a) A. Minten, Electron scattering, form factors, vector mesons, CERN-69-22 Report
-//  double sMott           = kAem2/4/Ei/Ei/sin_halftheta2/sin_halftheta2*(1 - beta2*sin_halftheta2);
-// Eq. (2.47) S. M. Bilenky, Lectures on physics of neutrino and lepton-nucleon processes, Moscow, Energoizdat, 1981
-//  double sMott           = kAem2*cos_halftheta2/4/Ei/Ei/sin_halftheta2/sin_halftheta2/(1 + 2*Ei*TMath::Sqrt(sin_halftheta2)/mN);
-  //Eq. (3.65) of Ref. 3
-  double sMott = kAem2*cos_halftheta2/4./Ei/Ei/sin_halftheta2/sin_halftheta2; 
+//  Eq. (10a) of Ref. 3
+  double sMott           = kAem2/4/Ei/Ei/sin_halftheta2/sin_halftheta2*(1 - beta2*sin_halftheta2);
+// Eq. (3.65) of Ref. 4, the same as Eq. (10a) of Ref. 3 in the ultrarelativistic approach
+//  double sMott = kAem2*cos_halftheta2/4./Ei/Ei/sin_halftheta2/sin_halftheta2; 
 
   double xsec            = 2*kPi*sMott*R;                                                                // Eq. (5)
   

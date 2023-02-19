@@ -143,7 +143,7 @@ double SuSAMstarQELCCPXSec::d2sQES_dEldCosThetal(const Interaction * interaction
   if (fourq2 >= 0)
     return 0.;
   
-  //kinematics->Setq2(fourq2);
+  kinematics->Setq2(fourq2);
   
   // kinematic factor
   double v0      = (enu+emu)*(enu+emu) - q2;

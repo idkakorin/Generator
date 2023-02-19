@@ -50,6 +50,7 @@ protected:
 private:
   void LoadConfig (void);
   double fEmax;
+  double ftheta_min;
 mutable double fXSecAtEmax;
   
 };
@@ -66,7 +67,7 @@ mutable double fXSecAtEmax;
    class d2Xsec_dEldCosThetal: public ROOT::Math::IBaseFunctionMultiDim
    {
     public:
-      d2Xsec_dEldCosThetal(const XSecAlgorithmI * m, const Interaction * i);
+      d2Xsec_dEldCosThetal(const XSecAlgorithmI * m, const Interaction * i, double cos_theta_max);
      ~d2Xsec_dEldCosThetal();
       // ROOT::Math::IBaseFunctionMultiDim interface
       unsigned int                        NDim   (void)               const;
@@ -76,6 +77,7 @@ mutable double fXSecAtEmax;
     private:
       const XSecAlgorithmI * fModel;
       const Interaction *    fInteraction;
+      double fcos_theta_max;
    };
    
 

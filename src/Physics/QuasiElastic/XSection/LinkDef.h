@@ -34,6 +34,7 @@
 #pragma link C++ class genie::SmithMonizQELCCXSec;
 #pragma link C++ class genie::SmithMonizUtils;
 #pragma link C++ class genie::SuSAMstarQELCCPXSec;
+#pragma link C++ class genie::SuSAMstarEMPXSec;
 #pragma link C++ class genie::SuSAMstarQELCCXSec;
 #pragma link C++ class genie::SuSAMstarUtils;
 
