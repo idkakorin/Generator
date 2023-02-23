@@ -9,8 +9,7 @@
 \ref
              1. Amaro J. E., Ruiz Arriola E., Ruiz Simo I., Phys.Rev.C 92 (2015) 054607
              2. Amaro J. E., Ruiz Arriola E., Ruiz Simo I., Phys.Rev.C 98 (2018) 024627
-             3. A. Minten, Electron scattering, form factors, vector mesons, CERN-69-22 Report
-             4. de Forest T. Jr., Walecka J.D., Adv.Phys. 15(57) (1966) 1-109
+             3. de Forest T. Jr., Walecka J.D., Adv.Phys. 15(57) (1966) 1-109
       
 
 \created  January 2023

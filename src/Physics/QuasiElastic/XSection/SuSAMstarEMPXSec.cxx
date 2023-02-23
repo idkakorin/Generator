@@ -85,12 +85,15 @@ double SuSAMstarEMPXSec::XSec(const Interaction * interaction, KinePhaseSpace_t 
   //  mass of outgoing charged lepton
   double m_lep = interaction->FSPrimLepton()->Mass();
   double mm_lep = m_lep*m_lep;
-  // square of speed of initial electron
-  double beta2 = 1 - mm_lep/Ei/Ei;
   // magnitude of the 3-momentum of outgoing lepton
   double Pl  = leptonMom.P();
   // cosine of angle of outgoing charged lepton
   double cost = leptonMom.CosTheta();
+  if(cost == 1) 
+  {
+     LOG("SuSAM*",pFATAL) << "*** Wrong angle of scattering!"; 
+     exit(1);
+  }
   // magnitude of the 3-momentum transfer
   double q2 = Ei*Ei + Pl*Pl - 2.*Ei*Pl*cost;
   double q = TMath::Sqrt(q2);
@@ -105,9 +108,10 @@ double SuSAMstarEMPXSec::XSec(const Interaction * interaction, KinePhaseSpace_t 
   double sin_halftheta2  = (1 - cost)/2;
   double cos_halftheta2  = (1 + cost)/2;
   
-  // Values defined underneath Eq.(5)
-  double vl = Q2*Q2/q2/q2;
-  double vt = sin_halftheta2/cos_halftheta2 + Q2/q2/2;
+  // Here we redefined values vl and vt (see Eq.(5)) to avoid singularity at theta=180 degrees
+  // vl->vl*cos^2(theta/2)/sin^2(theta/2), vt->vt*cos^2(theta/2)/sin^2(theta/2),
+  double vl = Q2*Q2*cos_halftheta2/q2/q2/sin_halftheta2;
+  double vt = 1 + cos_halftheta2*Q2/q2/sin_halftheta2/2;
   
   // adimensional variables
   double kappa  = q/meff/2;
@@ -205,10 +209,10 @@ double SuSAMstarEMPXSec::XSec(const Interaction * interaction, KinePhaseSpace_t 
   }
   
  
-//  Eq. (10a) of Ref. 3
-  double sMott           = kAem2/4/Ei/Ei/sin_halftheta2/sin_halftheta2*(1 - beta2*sin_halftheta2);
-// Eq. (3.65) of Ref. 4, the same as Eq. (10a) of Ref. 3 in the ultrarelativistic approach
-//  double sMott = kAem2*cos_halftheta2/4./Ei/Ei/sin_halftheta2/sin_halftheta2; 
+// Eq. (3.65) of Ref. 3
+// Here we redefined sMott to avoid singularity at theta=180 degrees
+// sMott->sMott*sin^2(theta/2)/cos^2(theta/2)
+  double sMott = kAem2/4/Ei/Ei/sin_halftheta2; 
 
   double xsec            = 2*kPi*sMott*R;                                                                // Eq. (5)
   
