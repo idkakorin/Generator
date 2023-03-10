@@ -3,7 +3,7 @@
 <alg_conf>
 
 <!--
-Configuration for the SuSAM* QEL CCP xsec algorithm.
+Configuration for the SuSAM* QELEMP xsec algorithm.
 
 Configurable Parameters:
 .....................................................................................................................
