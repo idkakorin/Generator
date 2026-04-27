@@ -99,6 +99,66 @@ namespace genie {
         // members from configuration options
         void Configure(const Registry & config);
         void Configure(std::string config);
+        
+        /**
+         * @brief Inclusive hadronic response functions and structure functions
+         *        for fixed W and Q^2 kinematics.
+         *
+         * Computes the response functions
+         * rt, rl, rtp, rrh, rrh0, rrh0i
+         * and the corresponding inclusive structure functions
+         * W1, W2, W3, W4, W5
+         * for single-pion production in the DCC model.
+         *
+         * The calculation uses the kinematics stored in the supplied
+         * Interaction object and is intended for the inclusive
+         * d^2sigma / dW dQ^2 cross-section formalism.
+         */
+        struct HadronicResponse
+        {
+            /// Structure function W1
+            double W1 = 0.;
+
+            /// Structure function W2
+            double W2 = 0.;
+
+            /// Structure function W3
+            double W3 = 0.;
+
+            /// Structure function W4
+            double W4 = 0.;
+
+            /// Structure function W5
+            double W5 = 0.;
+
+            /// Transverse response function
+            double rt = 0.;
+
+            /// Longitudinal response function
+            double rl = 0.;
+
+            /// Vector-axial interference response
+            double rtp = 0.;
+
+            /// Scalar response entering W4
+            double rrh = 0.;
+
+            /// Scalar-interference response entering W5
+            double rrh0 = 0.;
+        };
+
+        /**
+         * @brief Compute inclusive hadronic response for given interaction.
+         *
+         * Evaluates the response functions and structure functions
+         * associated with the supplied Interaction object.
+         *
+         * @param interaction GENIE interaction containing probe, target,
+         *        and kinematic variables.
+         *
+         * @return HadronicResponse structure with all computed quantities.
+         */
+        HadronicResponse ComputeHadronicResponse(const Interaction* interaction) const;
 
     private:
         /// Maximal number of \f$W\f$-nodes in the table with ANL-Osaka multipole amplitudes

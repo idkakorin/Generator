@@ -263,7 +263,6 @@ double DCCSPPPXSec::XSec(const Interaction * interaction, KinePhaseSpace_t kps) 
             rtp   -= c1*(dotc(zvmp, zaep) + dotc(zvem, zamm)) - c2*(dotc(zvmm, zaem) + dotc(zvep, zamp));
             rrh   += lp13*norm2(zrhp) + l3*norm2(zrhm);
             rrh0  += lp13*dotc(zaxp, zrhp) + l3*dotc(zaxm, zrhm);
-            rrh0i += lp13*imag_dotc(zaxp, zrhp) + l3*imag_dotc(zaxm, zrhm);
         }
 
         double W1  =  rt*fact/2;
@@ -593,6 +592,102 @@ double DCCSPPPXSec::XSec(const Interaction * interaction, KinePhaseSpace_t kps) 
   }
   return xsec;
 
+}
+//____________________________________________________________________________
+DCCSPPPXSec::HadronicResponse DCCSPPPXSec::ComputeHadronicResponse(
+                                     const Interaction* interaction) const
+{
+    HadronicResponse hr;
+
+    if (!interaction) return hr;
+    if (!this->ValidProcess(interaction)) return hr;
+    if (!this->ValidKinematics(interaction)) return hr;
+
+    const Kinematics& kinematics = interaction->Kine();
+
+    double Q2  = kinematics.Q2();
+    double W   = kinematics.W();
+    double Wsq = W * W;
+
+    PDGLibrary * pdglib = PDGLibrary::Instance();
+    
+    // mass of isoscalar pion
+    double fpio     = (pdglib->Find(kPdgPiP)->Mass() + pdglib->Find(kPdgPi0)->Mass() + pdglib->Find(kPdgPiM)->Mass())/3;
+    // mass of isoscalar nucleon
+    double fnuc     = (pdglib->Find(kPdgProton)->Mass() + pdglib->Find(kPdgNeutron)->Mass())/2;
+    double fnuc2    = fnuc*fnuc;
+
+    // energy transfer in the frame of center of mass \piN
+    double omegc    = (Wsq - fnuc2 - Q2)/2/W;
+    // vec{qc} - momentum transfer in the frame of center of mass \piN
+    // vec{qc}^2 - square of momentum transfer in the frame of center of mass \piN
+    double qc2sp    = Q2 + omegc*omegc;
+    // |vec{qc}|
+    double qgamc    = std::sqrt(qc2sp);
+    // vec{q} - momentum transfer in the LAB-frame
+    // |vec{q}|
+    double qgam     = qgamc*W/fnuc;
+    // vec{q}^2 - square of momentum transfer in the LAB-frame
+    double q2sp     = qgam*qgam;
+
+    // energy of pion in the frame of center of mass \piN
+    double epioc    = (Wsq - fnuc2 + fpio*fpio)/2/W;
+    //  vec{k} - momentum of pion in the frame of center of mass \piN
+    // |vec{k}|
+    double qpioc    = std::sqrt(TMath::Max(epioc*epioc - fpio*fpio, 0.));
+
+    std::complex<double> zvep, zvem, zvmp, zvmm, zvsp, zvsm, zaep, zaem, zamp, zamm, zalp, zalm, zasp, zasm, zrhp, zrhm, zaxp, zaxm;
+    double fact   = 4*W*qpioc/fnuc;
+    double facl   = Q2/qgamc/qgamc;
+    for (int il = 0; il < maxl; il++)
+    {
+        // vector current
+        zvep  = MultipoleV(interaction, 0, il-1);  // E^+_{l-1}
+        zvem  = MultipoleV(interaction, 1, il+1);  // E^-_{l+1}
+        zvmp  = MultipoleV(interaction, 2, il  );  // M^+_{l}
+        zvmm  = MultipoleV(interaction, 3, il  );  // M^-_{l}
+        zvsp  = MultipoleV(interaction, 6, il-1);  // S^+_{l-1}
+        zvsm  = MultipoleV(interaction, 7, il+1);  // S^-_{l+1}
+
+        // axial vector current
+        zaep  = MultipoleA(interaction, 0, il  );  // E^+_{l}
+        zaem  = MultipoleA(interaction, 1, il  );  // E^-_{l}
+        zamp  = MultipoleA(interaction, 2, il-1);  // M^+_{l-1}
+        zamm  = MultipoleA(interaction, 3, il+1);  // M^-_{l+1}
+        zalp  = MultipoleA(interaction, 4, il  );  // L^+_{l}
+        zalm  = MultipoleA(interaction, 5, il  );  // L^-_{l}
+        zasp  = MultipoleA(interaction, 6, il  );  // S^+_{l}
+        zasm  = MultipoleA(interaction, 7, il  );  // S^-_{l}
+
+        zrhp  = omegc*zasp - qgamc*zalp;
+        zrhm  = omegc*zasm - qgamc*zalm;
+        zaxp  = zasp + zrhp*omegc/Q2;
+        zaxm  = zasm + zrhm*omegc/Q2;
+        
+        double lp1 = il + 1;
+        double l2  = il * il;
+        double l3  = l2 * il;
+        double lp12 = lp1  * lp1;
+        double lp13 = lp12 * lp1;
+        double c1 = lp12 * il;
+        double c2 = lp1 * l2;
+
+        hr.rt    += c1*(norm2(zvmp) + norm2(zvem) + norm2(zamm) + norm2(zaep)) +
+                    c2*(norm2(zvmm) + norm2(zvep) + norm2(zamp) + norm2(zaem));
+        hr.rl    += lp13*(norm2(zvsm) + norm2(zaxp)) + l3*(norm2(zvsp) + norm2(zaxm));
+        hr.rtp   -= c1*(dotc(zvmp, zaep) + dotc(zvem, zamm)) - c2*(dotc(zvmm, zaem) + dotc(zvep, zamp));
+        hr.rrh   += lp13*norm2(zrhp) + l3*norm2(zrhm);
+        hr.rrh0  += lp13*dotc(zaxp, zrhp) + l3*dotc(zaxm, zrhm);
+        hr.rrh0i += lp13*imag_dotc(zaxp, zrhp) + l3*imag_dotc(zaxm, zrhm);
+    }
+
+    hr.W1  =  hr.rt*fact/2;
+    hr.W2  =  Q2/q2sp*(hr.rt/2 + hr.rl*facl)*fact;
+    hr.W3  = -2*fnuc/qgam*hr.rtp*fact;
+    hr.W4  =  fnuc2/Q2/Q2*hr.rrh*fact;
+    hr.W5  = -W/q2sp*hr.rrh0*fact;
+
+    return hr;
 }
 //____________________________________________________________________________
 void DCCSPPPXSec::CalculateLegendre(double x, double la[3][maxl+1]) const
