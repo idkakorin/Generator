@@ -145,6 +145,9 @@ namespace genie {
 
             /// Scalar-interference response entering W5
             double rrh0 = 0.;
+
+            /// Imaginary part of scalar-interference response
+            double rrh0i = 0.;
         };
 
         /**
